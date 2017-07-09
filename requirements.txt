@@ -1,0 +1,10 @@
+click==6.7
+Flask==0.12.2
+Flask-Uploads==0.2.1
+gunicorn==19.7.1
+itsdangerous==0.24
+Jinja2==2.9.6
+MarkupSafe==1.0
+PyYAML==3.12
+ujson==1.35
+Werkzeug==0.12.2
