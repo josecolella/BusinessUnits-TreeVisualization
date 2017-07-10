@@ -25,7 +25,7 @@
     // Set the dimensions and margins of the diagram
     var m = [20, 120, 20, 120],
         w = 1280 - m[1] - m[3],
-        h = 800 - m[0] - m[2],
+        h = 1000 - m[0] - m[2],
         i = 0,
         root;
 
@@ -70,11 +70,12 @@
       var nodes = tree.nodes(root).reverse();
 
       // Normalize for fixed-depth.
-      nodes.forEach(function(d) { d.y = d.depth * 180; });
+      nodes.forEach(function(d) { d.y = d.depth * 260; });
 
       // Update the nodes…
       var node = vis.selectAll("g.node")
           .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
 
       // Enter any new nodes at the parent's previous position.
       var nodeEnter = node.enter().append("svg:g")
