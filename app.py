@@ -18,21 +18,26 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
-from flask import Flask
-from flask import (jsonify, render_template, request, redirect, url_for, flash)
-from flask_uploads import (UploadSet, configure_uploads)
 import cyamlTree
+from flask import (Flask, jsonify, render_template, request,
+                   redirect, url_for, flash, make_response, send_file)
+from flask_uploads import (UploadSet, configure_uploads)
+from flask_caching import Cache
 import ujson
 
 app = Flask(__name__)
 app.secret_key = 'e2ea4d4fed55c18e397c4f22350e160009b88302b2404232e3e4fa50cafb7950'
 app.config['UPLOADED_FILES_DEST'] = '/tmp/business_units'
+
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
 UPLOADED_FILES_DEST = '/tmp/business_units'
 uploaded_files = UploadSet(name='files', extensions=('yml',))
 configure_uploads(app, (uploaded_files,))
 
 
 @app.route('/', methods=['GET'])
+@cache.cached(timeout=60)
 def index():
     return render_template('index.html')
 
@@ -44,10 +49,12 @@ def upload():
         yaml_dict = cyamlTree.businessunits_to_dict(
             uploaded_files.path(filename))
         output = cyamlTree.dict_to_d3tree(yaml_dict)
-    return render_template('upload.html', tree=ujson.dumps(output[0]))
+
+        return render_template('upload.html', tree=ujson.dumps(output[0]))
 
 
 @app.route('/about', methods=['GET'])
+@cache.cached(timeout=60)
 def about():
     return jsonify({'version': 1.0,
                     'message': 'Welcome to the API'})
