@@ -8,5 +8,6 @@ Jinja2==2.9.6
 MarkupSafe==1.0
 pytz==2017.2
 PyYAML==3.12
+redis==2.10.5
 ujson==1.35
 Werkzeug==0.12.2
