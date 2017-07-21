@@ -49,8 +49,7 @@ def upload():
         yaml_dict = cyamlTree.businessunits_to_dict(
             uploaded_files.path(filename))
         output = cyamlTree.dict_to_d3tree(yaml_dict)
-
-        return render_template('upload.html', tree=ujson.dumps(output[0]))
+        return render_template('base_tree.html', tree=ujson.dumps(output))
 
 
 @app.route('/about', methods=['GET'])
