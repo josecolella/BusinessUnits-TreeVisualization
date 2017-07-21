@@ -21,13 +21,14 @@
 import cyamlTree
 from flask import (Flask, jsonify, render_template, request,
                    redirect, url_for, flash, make_response, send_file)
-from flask_uploads import (UploadSet, configure_uploads)
+from flask_uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 from flask_caching import Cache
 import ujson
 
 app = Flask(__name__)
 app.secret_key = 'e2ea4d4fed55c18e397c4f22350e160009b88302b2404232e3e4fa50cafb7950'
 app.config['UPLOADED_FILES_DEST'] = '/tmp/business_units'
+app.config['SERVER_NAME'] = 'http://localhost'
 
 cache = Cache(app, config={'CACHE_TYPE': 'redis'})
 
@@ -44,12 +45,29 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    response = None
     if request.method == 'POST' and 'file' in request.files:
-        filename = uploaded_files.save(request.files.get('file'))
-        yaml_dict = cyamlTree.businessunits_to_dict(
-            uploaded_files.path(filename))
-        output = cyamlTree.dict_to_d3tree(yaml_dict)
-        return render_template('base_tree.html', tree=ujson.dumps(output))
+        try:
+            filename = uploaded_files.save(request.files.get('file'))
+            yaml_dict = cyamlTree.businessunits_to_dict(
+                uploaded_files.path(filename))
+            output = cyamlTree.dict_to_d3tree(yaml_dict)
+            response = render_template(
+                'base_tree.html', tree=ujson.dumps(output))
+        except UploadNotAllowed:
+            message = ujson.dumps({
+                "status": "Error: Upload Not Allowed",
+                "description": "Only .yml files can be uploaded"
+            })
+            response = make_response(message, 400)
+    else:
+        message = ujson.dumps({
+            "status": "Error: Method Not Allowed",
+            "description": "Only POST method allowed"
+        })
+        response = make_response(message, 405)
+
+    return response
 
 
 @app.route('/about', methods=['GET'])
@@ -60,4 +78,4 @@ def about():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', debug=True)
