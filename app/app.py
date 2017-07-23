@@ -28,7 +28,6 @@ import ujson
 app = Flask(__name__)
 app.secret_key = 'e2ea4d4fed55c18e397c4f22350e160009b88302b2404232e3e4fa50cafb7950'
 app.config['UPLOADED_FILES_DEST'] = '/tmp/business_units'
-app.config['SERVER_NAME'] = 'http://localhost'
 
 cache = Cache(app, config={'CACHE_TYPE': 'redis'})
 
