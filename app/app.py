@@ -19,8 +19,7 @@
 # DEALINGS IN THE SOFTWARE.
 
 import cyamlTree
-from flask import (Flask, jsonify, render_template, request,
-                   redirect, url_for, flash, make_response, send_file)
+from flask import (Flask, jsonify, render_template, request, make_response)
 from flask_uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 from flask_caching import Cache
 import ujson
