@@ -75,5 +75,17 @@ def about():
                     'message': 'Welcome to the API'})
 
 
+@app.route('/callback', methods=['GET'])
+def callback():
+    process_id = request.args.get('id')
+    process_url = request.args.get('url')
+    step = request.args.get('step')
+    return jsonify({
+        'id': process_id,
+        'url': process_url,
+        'step': step
+    })
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
