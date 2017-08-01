@@ -20,16 +20,15 @@
 
 from __future__ import print_function
 from flask import (Flask, jsonify, render_template,
-                   request, make_response, send_file)
+                   request, make_response)
 from flask_uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 from flask_caching import Cache
-import redis
 import ujson
 import cyamlTree
-from tasks import svg_to_pdf
+import uuid
 
 app = Flask(__name__)
-app.secret_key = 'e2ea4d4fed55c18e397c4f22350e160009b88302b2404232e3e4fa50cafb7950'
+app.secret_key = str(uuid.uuid4())
 app.config['UPLOADED_FILES_DEST'] = '/tmp/business_units'
 app.config['DOWNLOADED_FILES_DEST'] = '/tmp/'
 cache = Cache(app, config={'CACHE_TYPE': 'redis'})
@@ -77,26 +76,6 @@ def upload():
 def about():
     return jsonify({'version': 1.0,
                     'message': 'Welcome to the API'})
-
-
-@app.route('/generate_pdf', methods=['POST'])
-def generate_pdf():
-    svg_file = request.files.get('file')
-    file_path = f"{app.config['DOWNLOADED_FILES_DEST']}{svg_file.filename}"
-    print(file_path)
-    svg_file.save(file_path)
-    # Send to jobs queue
-    svg_to_pdf.delay(file_path)
-    return jsonify({"status": 1})
-
-
-@app.route('/callback', methods=['GET'])
-def callback():
-    process_id = request.args.get('id')
-    process_url = request.args.get('url')
-    step = request.args.get('step')
-    # TODO SEND FILE BACK TO CLIENT
-    return send_file('../Hotel.pdf')
 
 
 if __name__ == '__main__':

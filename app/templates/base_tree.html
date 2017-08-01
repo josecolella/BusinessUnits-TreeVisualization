@@ -68,17 +68,13 @@
         },
         methods: {
             showSVG: function(event) {
-                console.log("Clicked");
                 this.currentApplication = event.target.text;
-                console.log("Here");
                 let index = parseInt(/(\d+)-.*/.exec(event.target.text));
                 if (!this.renderedApplications.hasOwnProperty(index)) {
-                    console.log("No cache");
                     d3.select("svg").remove();
                     draw_tree(this.applications[index]);
                     this.renderedApplications[index] = d3.select("svg").node();
                 } else {
-                    console.log("Cache");
                     d3.select("#app-4 > div.column.is-three-quarters").html(this.renderedApplications[index].outerHTML)
                 }
                 this.seen = true;
@@ -93,15 +89,16 @@
                     .attr("version", 1.1)
                     .attr("xmlns", "http://www.w3.org/2000/svg")
                     .attr("xmlns:link", "http://www.w3.org/1999/xlink")
-                    .node().outerHTML;
-                let blob = new Blob([html], {
+                    .node();
+                let blob = new Blob([html.outerHTML], {
                     type: "image/svg+xml"
                 });
                 return {
-                    "svg": blob,
-                    "filename": this.currentApplication,
-                    "width": parseFloat(svg.style("width")),
-                    "height": parseFloat(svg.style("height")),
+                    svg: blob,
+                    filename: this.currentApplication,
+                    width: parseFloat(svg.style("width")),
+                    height: parseFloat(svg.style("height")),
+                    html: html
                 };
             },
             saveSVG: function(event) {
@@ -114,9 +111,10 @@
                 let doc = new PDFDocument({compress: false, size: [blob.width, blob.height]});
                 let options = {
                     assumePt: false,
-                    useCSS: true
+                    useCSS: true,
+                    preserveAspectRation: ""
                 }
-                SVGtoPDF(doc, blob.svg, 0, 0, options);
+                SVGtoPDF(doc, blob.html, 0, 0, options);
                 let stream = doc.pipe(blobStream());
                 stream.on('finish', function() {
                     let pdfBlob = stream.toBlob('application/pdf');

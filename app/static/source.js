@@ -1,6 +1,5 @@
 var SVGtoPDF = function(doc, svg, x, y, options) {
     "use strict";
-
     doc.addContent = function(data) {
       (this._currentGroup && this._currentGroup.xobj || this.page).write(data);
       return this;
@@ -957,8 +956,7 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         if (cache[key] !== undefined) {return cache[key];}
         let keyInfo = Properties[key] || {}, value, result;
         if (useCSS && key !== 'transform') { // the CSS transform behaves strangely
-            console.log(useCSS);
-          if (!this.css) {console.log(this.css);this.css = getComputedStyle(obj);}
+          if (!this.css) {this.css = getComputedStyle(obj);}
           value = this.css[keyInfo.css || key] || this.attr(key);
         } else {
           value = this.attr(key);
@@ -2192,8 +2190,8 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         fontCallback = options.fontCallback,
         imageCallback = options.imageCallback,
         precision = Math.ceil(Math.max(1, options.precision)) || 3;
-    console.log("USE CSS");
-    console.log(useCSS);
+    console.log(options);
+
     if (typeof warningCallback !== 'function') {
       warningCallback = function(str) {
         if (typeof console !== undefined && typeof console.warn === 'function') {console.warn(str);}
@@ -2230,8 +2228,6 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
       let elem = new SvgElem(svg, null);
       if (typeof elem.drawInDocument === 'function') {
         if (options.useCSS && !useCSS) {
-            console.log(options.useCSS);
-            console.log(!useCSS);
           warningCallback('SVGtoPDF: useCSS option can only be used for SVG *elements* in compatible browsers');
         }
         doc.save().translate(x || 0, y || 0).scale(pxToPt);
