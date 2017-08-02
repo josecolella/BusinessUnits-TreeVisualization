@@ -20,7 +20,7 @@
     <section class="section">
     <div class="container">
         <div class="columns" id="app-4">
-            <div class="column is-one-quarter">
+            <div class="column">
                 <div class="field is-grouped">
                     <p class="control">
                         <div v-on:click="saveSVG">
@@ -50,7 +50,6 @@
     </div>
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/2.4.0/vue.min.js"></script>
     <script src="{{ url_for('static', filename='app.min.js')}}"></script>
     <script src="{{ url_for('static', filename='pdfkit.min.js')}}" async></script>
     <script src="{{ url_for('static', filename='blob-stream.min.js') }}" async></script>
@@ -64,7 +63,7 @@
             renderedApplications: {},
             seen: false,
             currentApplication: undefined,
-            dummy: ''
+            dummy: '',
         },
         methods: {
             showSVG: function(event) {

@@ -39,7 +39,7 @@ configure_uploads(app, (uploaded_files,))
 
 
 @app.route('/', methods=['GET'])
-@cache.cached(timeout=60)
+#@cache.cached(timeout=60)
 def index():
     return render_template('index.html')
 
@@ -48,6 +48,7 @@ def index():
 def upload():
     response = None
     if request.method == 'POST' and 'file' in request.files:
+        print("Here")
         try:
             filename = uploaded_files.save(request.files.get('file'))
             yaml_dict = cyamlTree.businessunits_to_dict(
@@ -61,7 +62,8 @@ def upload():
                 "description": "Only .yml files can be uploaded"
             })
             response = make_response(message, 400)
-
+    else:
+        print("ELSE")
     return response
 
 
