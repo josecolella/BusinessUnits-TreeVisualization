@@ -1,2 +1,129 @@
-{% block tree %}
+{% extends "base.html" %}
+{% block head %}
+    <style>
+    .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+    }
+    .node text {
+    font: 12px sans-serif;
+    }
+    .link {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 2px;
+    }
+    </style>
+{% endblock %}
+{% block body %}
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    {# <script src="{{ url_for('static', filename='vue.js')}}"></script> #}
+    <script src="{{ url_for('static', filename='app.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js" async></script>
+    <script src="{{ url_for('static', filename='pdfkit.js')}}" async></script>
+    <script src="{{ url_for('static', filename='blob-stream.js') }}" async></script>
+    <script src="{{ url_for('static', filename='source.js') }}" async></script>
+    <section class="section">
+    <div class="container">
+        <div class="columns" id="app-4">
+            <div class="column is-one-quarter">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <div v-on:click="saveSVG">
+                            <a class="button is-info" v-if="seen">Save as SVG</a>
+                        </div>
+                    </p>
+                    <p class="control">
+                        <div v-on:click="savePDF">
+                            <a class="button is-info" v-if="seen">Save as PDF</a>
+                        </div>
+                    </p>
+                </div>
+                <aside class="menu">
+                    <p class="menu-label">
+                        Applications
+                    </p>
+                    <ul class="menu-list">
+                        <li v-for="(application,index) in applications" v-on:click="showSVG">
+                            <a>{% raw %}{{index}}-{{application.name}}{% endraw %}</a>
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+            <div class="column is-three-quarters">
+            </div>
+        </div>
+    </div>
+    </section>
+    <script>
+    const app4 = new Vue({
+        el: '#app-4',
+        data: {
+            applications: {{ tree | safe}},
+            renderedApplications: {},
+            seen: false,
+            currentApplication: undefined
+        },
+        methods: {
+            showSVG: function(event) {
+                this.currentApplication = event.target.text;
+                let index = parseInt(/(\d+)-.*/.exec(event.target.text));
+                if (!this.renderedApplications.hasOwnProperty(index)) {
+                    d3.select("svg").remove();
+                    draw_tree(this.applications[index]);
+                    this.renderedApplications[index] = d3.select("svg").node();
+                } else {
+                    d3.select("#app-4 > div.column.is-three-quarters").html(this.renderedApplications[index].outerHTML)
+                }
+                this.seen = true;
+            },
+            getSVG: function(event) {
+                let css = d3.select("style").node();
+                let svg = d3.select("svg");
+                svgNode = svg.node();
+                svgNode.insertBefore(css, svgNode.firstChild);
+                let html = d3.select("svg")
+                    .attr("title", this.currentApplication)
+                    .attr("version", 1.1)
+                    .attr("xmlns", "http://www.w3.org/2000/svg")
+                    .attr("xmlns:link", "http://www.w3.org/1999/xlink")
+                    .node();
+                let blob = new Blob([html.outerHTML], {
+                    type: "image/svg+xml"
+                });
+                return {
+                    svg: blob,
+                    filename: this.currentApplication,
+                    width: parseFloat(svg.style("width")),
+                    height: parseFloat(svg.style("height")),
+                    html: html
+                };
+            },
+            saveSVG: function(event) {
+                let blob = this.getSVG();
+                saveAs(blob.svg, blob.filename);
+            },
+            savePDF: function() {
+                console.log("Here");
+                let blob = this.getSVG();
+                let doc = new PDFDocument({compress: false, size: [blob.width, blob.height]});
+                let options = {
+                    assumePt: false,
+                    useCSS: true,
+                    preserveAspectRation: ""
+                }
+                SVGtoPDF(doc, blob.html, 0, 0, options);
+                let stream = doc.pipe(blobStream());
+                stream.on('finish', function() {
+                    let pdfBlob = stream.toBlob('application/pdf');
+                    saveAs(pdfBlob, blob.filename)
+                });
+                doc.end();
+            }
+        }
+    })
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" async></script>
 {% endblock %}

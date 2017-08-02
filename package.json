@@ -1,0 +1,29 @@
+{
+  "name": "businessunits-treevisualization",
+  "version": "1.0.0",
+  "description": "A small web application to transform the **BusinessUnits.yml** that is exported from the Dynatrace Data Center RUM CAS to generate a tree visualization SVG for each of the applications. Used for documentation purposes.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josecolella/BusinessUnits-TreeVisualization.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josecolella/BusinessUnits-TreeVisualization/issues"
+  },
+  "homepage": "https://github.com/josecolella/BusinessUnits-TreeVisualization#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "gulp-uglify-es": "^0.1.3",
+    "pump": "^1.0.2"
+  }
+}
