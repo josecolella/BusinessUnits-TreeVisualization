@@ -2190,7 +2190,6 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         fontCallback = options.fontCallback,
         imageCallback = options.imageCallback,
         precision = Math.ceil(Math.max(1, options.precision)) || 3;
-    console.log(options);
 
     if (typeof warningCallback !== 'function') {
       warningCallback = function(str) {

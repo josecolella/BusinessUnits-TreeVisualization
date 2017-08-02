@@ -54,19 +54,13 @@ def upload():
                 uploaded_files.path(filename))
             output = cyamlTree.dict_to_d3tree(yaml_dict)
             response = render_template(
-                'base_tree.html', tree=ujson.dumps(output))
+                'upload.html', tree=ujson.dumps(output))
         except UploadNotAllowed:
             message = ujson.dumps({
                 "status": "Error: Upload Not Allowed",
                 "description": "Only .yml files can be uploaded"
             })
             response = make_response(message, 400)
-    else:
-        message = ujson.dumps({
-            "status": "Error: Method Not Allowed",
-            "description": "Only POST method allowed"
-        })
-        response = make_response(message, 405)
 
     return response
 
