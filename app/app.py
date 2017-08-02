@@ -27,28 +27,27 @@ import ujson
 import cyamlTree
 import uuid
 
-app = Flask(__name__)
-app.secret_key = str(uuid.uuid4())
-app.config['UPLOADED_FILES_DEST'] = '/tmp/business_units'
-app.config['DOWNLOADED_FILES_DEST'] = '/tmp/'
-cache = Cache(app, config={'CACHE_TYPE': 'redis'})
+application = Flask(__name__)
+application.secret_key = str(uuid.uuid4())
+application.config['UPLOADED_FILES_DEST'] = '/tmp/business_units'
+application.config['DOWNLOADED_FILES_DEST'] = '/tmp/'
+cache = Cache(application, config={'CACHE_TYPE': 'redis'})
 
 
 uploaded_files = UploadSet(name='files', extensions=('yml',))
-configure_uploads(app, (uploaded_files,))
+configure_uploads(application, (uploaded_files,))
 
 
-@app.route('/', methods=['GET'])
-#@cache.cached(timeout=60)
+@application.route('/', methods=['GET'])
+@cache.cached(timeout=60)
 def index():
     return render_template('index.html')
 
 
-@app.route('/upload', methods=['POST'])
+@application.route('/upload', methods=['POST'])
 def upload():
     response = None
     if request.method == 'POST' and 'file' in request.files:
-        print("Here")
         try:
             filename = uploaded_files.save(request.files.get('file'))
             yaml_dict = cyamlTree.businessunits_to_dict(
@@ -62,12 +61,10 @@ def upload():
                 "description": "Only .yml files can be uploaded"
             })
             response = make_response(message, 400)
-    else:
-        print("ELSE")
     return response
 
 
-@app.route('/about', methods=['GET'])
+@application.route('/about', methods=['GET'])
 @cache.cached(timeout=60)
 def about():
     return jsonify({'version': 1.0,
@@ -75,4 +72,4 @@ def about():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    application.run(host='0.0.0.0')
