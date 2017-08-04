@@ -1,17 +1,17 @@
-# Deploying the Business Units Tree visualizer as an Ubuntu container
-
-FROM ubuntu:16.04
+FROM python:3.6.2-stretch
 MAINTAINER Jose Colella <josecolella@yahoo.com>
 
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
-RUN apt-get install -y python python-pip python-virtualenv redis-server nginx gunicorn supervisor
+RUN apt-get install -y nginx supervisor
 
 # Setup flask application
 RUN mkdir -p /deploy/app
 COPY app /deploy/app
-RUN pip install -r /deploy/app/requirements.txt
+COPY requirements.txt /deploy/app/requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r /deploy/app/requirements.txt
 
 # Setup nginx
 RUN rm /etc/nginx/sites-enabled/default
@@ -19,10 +19,12 @@ COPY flask.conf /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available/flask.conf /etc/nginx/sites-enabled/flask.conf
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
-# Setup supervisord
+# Setup systemd
+#COPY gunicorn.service /etc/systemd/system/gunicorn.service
+# supervisor setup
 RUN mkdir -p /var/log/supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
+COPY supervisord.conf /etc/supervisor/conf.d/
+COPY gunicorn.conf /etc/supervisor/conf.d/
 
-# Start processes
+EXPOSE 80
 CMD ["/usr/bin/supervisord"]
