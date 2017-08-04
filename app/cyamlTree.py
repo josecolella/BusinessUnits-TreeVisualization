@@ -17,6 +17,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 from __future__ import print_function
 import yaml
@@ -48,7 +50,7 @@ def businessunits_to_dict(yaml_file: str) -> dict:
     """
     TODO: Document
     """
-    with open(yaml_file) as f:
+    with open(yaml_file, "r", encoding="utf-8") as f:
         yaml_output = yaml.load(f.read(), Loader=Loader)
     return yaml_output
 
