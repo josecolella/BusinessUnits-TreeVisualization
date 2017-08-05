@@ -1,6 +1,6 @@
 # Business Units Tree Visualization
 
-A small web application to transform the **BusinessUnits.yml** that is exported
+A small web application to transform the **Business Units** export that is exported
 from the Dynatrace Data Center RUM CAS to generate a tree visualization SVG for each
 of the applications. Used for documentation purposes.
 
@@ -13,20 +13,68 @@ This is more so, when there are many Applications, are the client wants to have
 an updated view of the applications.
 
 
-## How to use
+## Usage
 
 This application is simple to use. There are two steps to follow.
 
-1. Upload the BusinessUnits.yml
-2. Save the SVG for the applications that you would like
+1. Upload the file exported by Central Analysis Server (usually called bussgroups)
+    - **No files are saved in the backend**
+2. Click on the application that you would like to visualize
+3. Save the visualization of the application as SVG and PDF
 
-## Dependencies
+
+
+![Tutorial on how to use platform](https://s3.amazonaws.com/f.cl.ly/items/2W0F27021Z2q2a2m182a/Screen%20Recording%202017-08-05%20at%2010.15%20pm.gif?AWSAccessKeyId=AKIAJEFUZRCWSLB2QA5Q&Expires=1501967829&Signature=ps%2FVgPTG%2B%2FsQLBe%2BBalIZXQuxl4%3D)
+
+
+## Demo
+
+You can play around with the platform at the following link:
+
+[http://46.101.235.101/](http://46.101.235.101/)
+
+If you find any bugs please open an issue, and any feedback is appreciated.
+
+## Deployment
+
+The easiest way to deploy this is through docker or as a service using the docker-compose.yml
 
 ```sh
-pip install -r requirements.txt
+docker pull josecolella/flask-nginx-businessunits-vis
+docker pull redis
+docker run -d -p 6379:6379 redis
+docker run -d -p 80:80 josecolella/flask-nginx-businessunits-vis
 ```
 
+* Through docker-compose.yml
 
+This will create two load-balances instances of the app and a redis cache instance
+
+```sh
+docker swarm init
+docker stack deploy -c docker-compose.yml businessunits-prod
+docker stack ps businessunits-prod
+```
+
+![docker stack ps businessunits-prod](https://cl.ly/2x2a212A2v1r/download/[3f25386c84676a5fedf2e6e13e58f1de]_Image%25202017-08-05%2520at%252010.32.00%2520pm.png)
+
+## Technologies
+
+### Backend
+
+- Python3.6
+- Flask
+- Gunicorn
+- Redis
+
+### Frontend
+
+Thanks to the following open-source projects which made this platform possible:
+
+- [D3.js](https://github.com/d3/d3)
+- [PDFKit.js](https://github.com/devongovett/pdfkit)
+- [FileSaver.js](https://github.com/eligrey/FileSaver.js)
+- [SVGtoPDF.js](https://github.com/alafr/SVG-to-PDFKit)
 
 ## License
 
