@@ -1,0 +1,32 @@
+<section class="section" id="app">
+    <div class="container">
+        <div class="columns is-mobile is-centered">
+            <div class="column is-half is-narrow">
+                <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
+                    <div class="file has-name" >
+                        <label class="file-label">
+                            <div class="field has-addons">
+                                <span class="button is-medium is-light">
+                                    <input class="file-input" type="file" name="file" v-on:change="putFileName">
+                                    <span class="file-cta">
+                                        <span class="file-icon">
+                                            <i class="fa fa-upload"></i>
+                                        </span>
+                                        <span class="file-label ">
+                                            Choose a file…
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="button is-medium is-outlined">
+                                    <span class="file-name" name=file>
+                                    {% raw %}{{ fileName }}{% endraw %}
+                                </span>
+                            </span>
+                            <input class="button is-medium is-info" type="submit" value="Upload File" name="submit">
+                        </div>
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
