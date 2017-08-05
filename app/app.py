@@ -31,32 +31,32 @@ import uuid
 
 application = Flask(__name__)
 application.secret_key = str(uuid.uuid4())
-application.config['UPLOADED_FILES_DEST'] = '/tmp/business_units'
-application.config['DOWNLOADED_FILES_DEST'] = '/tmp/'
-cache = Cache(application, config={'CACHE_TYPE': 'redis'})
+application.config["UPLOADED_FILES_DEST"] = "/tmp/business_units"
+application.config["DOWNLOADED_FILES_DEST"] = "/tmp/"
+cache = Cache(application, config={"CACHE_TYPE": "redis"})
 
 
-uploaded_files = UploadSet(name='files', extensions=('yml',))
+uploaded_files = UploadSet(name="files", extensions=("yml", ""))
 configure_uploads(application, (uploaded_files,))
 
 
-@application.route('/', methods=['GET'])
+@application.route("/", methods=["GET"])
 @cache.cached(timeout=60)
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@application.route('/upload', methods=['POST'])
+@application.route("/upload", methods=["POST"])
 def upload():
     response = None
-    if request.method == 'POST' and 'file' in request.files:
+    if request.method == "POST" and "file" in request.files:
         try:
-            filename = uploaded_files.save(request.files.get('file'))
+            filename = uploaded_files.save(request.files.get("file"))
             yaml_dict = cyamlTree.businessunits_to_dict(
                 uploaded_files.path(filename))
             output = cyamlTree.dict_to_d3tree(yaml_dict)
             response = render_template(
-                'upload.html', tree=ujson.dumps(output))
+                "upload.html", tree=ujson.dumps(output))
         except UploadNotAllowed:
             message = ujson.dumps({
                 "status": "Error: Upload Not Allowed",
@@ -66,12 +66,12 @@ def upload():
     return response
 
 
-@application.route('/about', methods=['GET'])
+@application.route("/about", methods=["GET"])
 @cache.cached(timeout=60)
 def about():
-    return jsonify({'version': 1.0,
-                    'message': 'Welcome to the API'})
+    return jsonify({"version": 1.0,
+                    "message": "Welcome to the API"})
 
 
-if __name__ == '__main__':
-    application.run(host='0.0.0.0')
+if __name__ == "__main__":
+    application.run(host="0.0.0.0")
