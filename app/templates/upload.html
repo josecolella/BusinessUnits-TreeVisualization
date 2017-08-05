@@ -24,12 +24,12 @@
                 <div class="field is-grouped">
                     <p class="control">
                         <div v-on:click="saveSVG">
-                            <a class="button is-info" v-if="seen">Save as SVG</a>
+                            <a class="button is-info" :disabled="seen == false">Save as SVG</a>
                         </div>
                     </p>
                     <p class="control">
                         <div v-on:click="savePDF">
-                            <a class="button is-info" v-if="seen">Save as PDF</a>
+                            <a class="button is-info" :disabled="seen == false">Save as PDF</a>
                         </div>
                     </p>
                 </div>
@@ -67,6 +67,7 @@
         },
         methods: {
             showSVG: function(event) {
+                this.seen = true
                 this.currentApplication = event.target.text;
                 let index = parseInt(/(\d+)-.*/.exec(event.target.text));
                 if (!this.renderedApplications.hasOwnProperty(index)) {
@@ -76,7 +77,6 @@
                 } else {
                     d3.select("#app-4 > div.column.is-three-quarters").html(this.renderedApplications[index].outerHTML)
                 }
-                this.seen = true;
             },
             getSVG: function(event) {
                 let css = d3.select("style").node().cloneNode(true);

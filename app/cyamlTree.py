@@ -22,11 +22,20 @@
 
 from __future__ import print_function
 import yaml
-import typing
+import os
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
+
+
+def remove_saved_file(f):
+    def decorated(*args, **kwargs):
+        result = f(*args, **kwargs)
+        if os.path.isfile(args[0]):
+            os.remove(args[0])
+        return result
+    return decorated
 
 
 def profile(func):
@@ -46,6 +55,7 @@ def profile(func):
     return check_profile
 
 
+@remove_saved_file
 def businessunits_to_dict(yaml_file: str) -> dict:
     """
     TODO: Document
@@ -55,7 +65,7 @@ def businessunits_to_dict(yaml_file: str) -> dict:
     return yaml_output
 
 
-def dict_to_d3tree(yaml_dict: dict) -> dict:
+def dict_to_d3tree(yaml_dict: dict) -> list:
     """
     TODO: Document
     """
