@@ -1,4 +1,6 @@
-# Business Units Tree Visualization
+# Business Units Tree Visualization 
+
+![Travis Build Status](https://travis-ci.org/josecolella/BusinessUnits-TreeVisualization.svg?branch=dev)
 
 A small web application to transform the **Business Units** export that is exported
 from the Dynatrace Data Center RUM CAS to generate a tree visualization SVG for each
