@@ -25,12 +25,13 @@ from flask import (Flask, jsonify, render_template,
                    request, make_response)
 from flask_uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 from flask_caching import Cache
-import ujson
-import cyamlTree
 import uuid
+import ujson
+from app.cyamlTree import (businessunits_to_dict, dict_to_d3tree)
+
 
 application = Flask(__name__)
-application.secret_key = str(uuid.uuid4())
+application.secret_key = str(uuid.uuid1())
 application.config["UPLOADED_FILES_DEST"] = "/tmp/business_units"
 application.config["DOWNLOADED_FILES_DEST"] = "/tmp/"
 cache = Cache(application, config={"CACHE_TYPE": "redis"})
@@ -52,9 +53,8 @@ def upload():
     if request.method == "POST" and "file" in request.files:
         try:
             filename = uploaded_files.save(request.files.get("file"))
-            yaml_dict = cyamlTree.businessunits_to_dict(
-                uploaded_files.path(filename))
-            output = cyamlTree.dict_to_d3tree(yaml_dict)
+            yaml_dict = businessunits_to_dict(uploaded_files.path(filename))
+            output = dict_to_d3tree(yaml_dict)
             response = render_template(
                 "upload.html", tree=ujson.dumps(output))
         except UploadNotAllowed:

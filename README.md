@@ -69,6 +69,7 @@ docker stack ps businessunits-prod
 
 ### Frontend
 
+
 Thanks to the following open-source projects which made this platform possible:
 
 - [D3.js](https://github.com/d3/d3)

@@ -15,7 +15,7 @@ RUN pip3 install -r /deploy/app/requirements.txt
 
 # Setup nginx
 RUN rm /etc/nginx/sites-enabled/default
-COPY flask.conf /etc/nginx/sites-available/
+COPY docker/flask.conf /etc/nginx/sites-available/
 RUN ln -s /etc/nginx/sites-available/flask.conf /etc/nginx/sites-enabled/flask.conf
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
@@ -23,8 +23,8 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 #COPY gunicorn.service /etc/systemd/system/gunicorn.service
 # supervisor setup
 RUN mkdir -p /var/log/supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/
-COPY gunicorn.conf /etc/supervisor/conf.d/
+COPY docker/supervisord.conf /etc/supervisor/conf.d/
+COPY docker/gunicorn.conf /etc/supervisor/conf.d/
 
 EXPOSE 80
 CMD ["/usr/bin/supervisord"]

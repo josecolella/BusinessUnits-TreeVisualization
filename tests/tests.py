@@ -19,29 +19,45 @@
 # DEALINGS IN THE SOFTWARE.
 
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import unittest
-import requests
+from app.app import application
 
 
-class BusinessUnitEndPointTestCase(unittest.TestCase):
+class EndPointTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.application = application
+        self.application.testing = True
 
     def test_about_page_status_code(self):
-        response = requests.get('http://localhost:5000/about')
-        self.assertEqual(response.status_code, 200)
+        with self.application.test_client() as client:
+            response = client.get('/about')
+            self.assertEqual(response.status_code, 200)
 
     def test_about_page_content_type(self):
-        response = requests.get('http://localhost:5000/about')
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        with self.application.test_client() as client:
+            response = client.get('/about')
+            self.assertEqual(response.headers['Content-Type'],
+                             'application/json')
+
+    def test_about_page_incorrect_http_method_response(self):
+        with self.application.test_client() as client:
+            response = client.post('/about')
+            self.assertEqual(response.status_code, 405)
 
     def test_index_page_status_code(self):
-        response = requests.get('http://localhost:5000/')
-        self.assertEqual(response.status_code, 200)
+        with self.application.test_client() as client:
+            response = client.get('/')
+            self.assertEqual(response.status_code, 200)
 
     def test_index_page_content_type(self):
-        response = requests.get('http://localhost:5000/')
-        self.assertEqual(response.headers['Content-Type'], 'text/html')
+        with self.application.test_client() as client:
+            response = client.get('/')
+            self.assertIn('text/html', response.headers['Content-Type'])
 
-
-if __name__ == '__main__':
-    unittest.main(verbosity=3)
+    def test_index_page_incorrect_http_method_response(self):
+        with self.application.test_client() as client:
+            response = client.post('/')
+            self.assertEqual(response.status_code, 405)
