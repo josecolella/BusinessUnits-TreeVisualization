@@ -33,7 +33,7 @@ This application is simple to use. There are two steps to follow.
 
 You can play around with the platform at the following link:
 
-[http://46.101.235.101/](http://46.101.235.101/)
+[http://dcrum-buv.duckdns.org/](http://dcrum-buv.duckdns.org/)
 
 If you find any bugs please open an issue, and any feedback is appreciated.
 
