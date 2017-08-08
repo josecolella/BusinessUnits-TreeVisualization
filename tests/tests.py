@@ -22,7 +22,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from app.app import application
+import sys
+import os
+sys.path.insert(0, os.path.abspath('../app'))
+from app import application
 
 
 class EndPointTestCase(unittest.TestCase):

@@ -11,4 +11,4 @@ services:
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # command to run tests
-script: python -m unittest -v tests/tests.py
+script: cd tests/ && python -m unittest -v tests.py
