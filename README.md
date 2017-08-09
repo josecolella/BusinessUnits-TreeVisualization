@@ -26,7 +26,7 @@ This application is simple to use. There are two steps to follow.
 
 
 
-![Tutorial on how to use platform](https://s3.amazonaws.com/f.cl.ly/items/2W0F27021Z2q2a2m182a/Screen%20Recording%202017-08-05%20at%2010.15%20pm.gif?AWSAccessKeyId=AKIAJEFUZRCWSLB2QA5Q&Expires=1501967829&Signature=ps%2FVgPTG%2B%2FsQLBe%2BBalIZXQuxl4%3D)
+![Tutorial on how to use platform](https://cl.ly/3e1U1k1D3o3O/Screen%20Recording%202017-08-05%20at%2010.15%20pm.gif)
 
 
 ## Demo
@@ -58,13 +58,11 @@ docker stack deploy -c docker-compose.yml businessunits-prod
 docker stack ps businessunits-prod
 ```
 
-![docker stack ps businessunits-prod](https://cl.ly/2x2a212A2v1r/download/[3f25386c84676a5fedf2e6e13e58f1de]_Image%25202017-08-05%2520at%252010.32.00%2520pm.png)
-
 ## Technologies
 
 ### Backend
 
-- Python3.6
+- Python 3
 - Flask
 - Gunicorn
 - Redis
