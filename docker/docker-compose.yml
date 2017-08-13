@@ -2,7 +2,7 @@ version: "3"
 services:
   web:
     # replace username/repo:tag with your name and image details
-    image: josecolella/flask-nginx-businessunits-vis
+    image: josecolella/flask-nginx-businessunits-vis:2.0-withssl
     deploy:
       replicas: 2
       resources:
@@ -13,6 +13,7 @@ services:
         condition: on-failure
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - webnet
   cache:
