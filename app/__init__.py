@@ -1,1 +1,1 @@
-__all__ = ['app', 'cyamlTree']
+__all__ = ['app', 'cyamlTree', 'wsgi']
