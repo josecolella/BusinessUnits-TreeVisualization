@@ -27,7 +27,7 @@ from flask_uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 from flask_caching import Cache
 import uuid
 import ujson
-from app.cyamlTree import (businessunits_to_dict, dict_to_d3tree)
+from cyamlTree import (businessunits_to_dict, dict_to_d3tree)
 
 
 application = Flask(__name__)
