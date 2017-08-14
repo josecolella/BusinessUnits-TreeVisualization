@@ -16,17 +16,15 @@
     {% include "index_body.html" %}
     <script>
     var app = new Vue({
-        el: "#app",
-        data: {
-        fileName: "The Business Units yml file goes here"
-        },
-        methods: {
-        putFileName: function(event) {
-        console.log("Here");
-        console.log(event.target.value);
-        this.fileName = event.target.value
+    el: "#app",
+    data: {
+    fileName: "Choose a file…"
+    },
+    methods: {
+            putFileName: function(event) {
+                this.fileName = event.target.files[0].name;
         }
-        }
+    }
     })
     </script>
 </section>

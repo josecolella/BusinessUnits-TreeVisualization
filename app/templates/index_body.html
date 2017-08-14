@@ -1,32 +1,24 @@
 <section class="section" id="app">
-    <div class="container">
-        <div class="columns is-mobile is-centered">
-            <div class="column is-half is-narrow">
-                <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
-                    <div class="file has-name" >
+    <div class="container is-fluid">
+        <div class="columns is-mobile is-multiline is-half-mobile is-one-third-tablet is-one-quarter-desktop is-centered">
+            <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
+                <div class="field is-grouped is-grouped-centered">
+                    <div class="file has-name is-medium">
                         <label class="file-label">
-                            <div class="field has-addons">
-                                <span class="button is-medium is-light">
-                                    <input class="file-input" type="file" name="file" v-on:change="putFileName">
-                                    <span class="file-cta">
-                                        <span class="file-icon">
-                                            <i class="fa fa-upload"></i>
-                                        </span>
-                                        <span class="file-label ">
-                                            Choose a file…
-                                        </span>
-                                    </span>
+                            <input class="file-input" type="file" name="file" v-on:change="putFileName">
+                            <span class="file-cta">
+                                <span class="file-icon">
+                                    <i class="fa fa-upload"></i>
                                 </span>
-                                <span class="button is-medium is-outlined">
-                                    <span class="file-name" name=file>
-                                    {% raw %}{{ fileName }}{% endraw %}
-                                </span>
+                                <span class="file-label">
+                                {% raw %}{{ fileName }}{% endraw %}
                             </span>
-                            <input class="button is-medium is-info" type="submit" value="Upload File" name="submit">
-                        </div>
+                        </span>
                     </label>
                 </div>
-            </form>
-        </div>
+                <input class="button is-medium is-info is-outlined" type="submit" value="Upload File" name="submit">
+            </div>
+        </form>
     </div>
 </div>
+</section>
