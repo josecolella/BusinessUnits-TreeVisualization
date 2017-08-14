@@ -18,11 +18,13 @@
     var app = new Vue({
     el: "#app",
     data: {
-    fileName: "Choose a file…"
+        fileName: "Choose a file…",
+        fileUploaded: false
     },
     methods: {
             putFileName: function(event) {
                 this.fileName = event.target.files[0].name;
+                this.fileUploaded = true;
         }
     }
     })

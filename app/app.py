@@ -21,8 +21,8 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
-from flask import (Flask, jsonify, render_template,
-                   request, make_response)
+from flask import (Flask, jsonify, render_template, url_for, flash,
+                   request, make_response, redirect)
 from flask_uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 from flask_caching import Cache
 import uuid
@@ -31,7 +31,10 @@ import cyamlTree
 
 
 application = Flask(__name__)
-application.secret_key = str(uuid.uuid1())
+application.secret_key = "{host_info}-{random_str}".format(
+    host_info=str(uuid.uuid1()),
+    random_str=str(uuid.uuid4())
+)
 application.config["UPLOADED_FILES_DEST"] = "/tmp/business_units"
 application.config["DOWNLOADED_FILES_DEST"] = "/tmp/"
 cache = Cache(application, config={"CACHE_TYPE": "redis"})
@@ -50,10 +53,14 @@ def index():
 @application.route("/upload", methods=["POST"])
 def upload():
     response = None
-    if request.method == "POST" and "file" in request.files:
+    is_file_in_request = "file" in request.files
+    is_file_empty = request.files.get("file").filename == ""
+    is_request_post = request.method == "POST"
+    if is_request_post and is_file_in_request and not is_file_empty:
         try:
             filename = uploaded_files.save(request.files.get("file"))
-            yaml_dict = cyamlTree.businessunits_to_dict(uploaded_files.path(filename))
+            yaml_dict = cyamlTree.businessunits_to_dict(
+                uploaded_files.path(filename))
             output = cyamlTree.dict_to_d3tree(yaml_dict)
             response = render_template(
                 "upload.html", tree=ujson.dumps(output))
@@ -63,6 +70,10 @@ def upload():
                 "description": "Only .yml files can be uploaded"
             })
             response = make_response(message, 400)
+    elif is_file_empty:
+        flash("Error: No file was uploaded")
+        response = redirect(url_for('index'))
+
     return response
 
 
