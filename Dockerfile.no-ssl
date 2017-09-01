@@ -1,0 +1,19 @@
+FROM python:3.6.2-stretch
+MAINTAINER Jose Colella <josecolella@yahoo.com>
+
+RUN apt-get update
+# Setup flask application
+RUN mkdir -p /deploy/app
+COPY app /deploy/app
+COPY requirements.txt /deploy/app/requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r /deploy/app/requirements.txt
+# supervisor setup
+RUN mkdir -p /var/log/supervisor
+COPY docker/supervisord.conf /etc/supervisor/conf.d/
+COPY docker/gunicorn.conf /etc/supervisor/conf.d/
+WORKDIR /deploy/app
+
+EXPOSE 80
+
+CMD ["/usr/local/bin/gunicorn", "--workers", "3", "--bind", "0.0.0.0:5000", "wsgi"]
