@@ -19,6 +19,7 @@
             <div class="field is-grouped is-grouped-centered">
                 <div class="file has-name is-medium">
                     <label class="file-label">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <input class="file-input" type="file" name="file" v-on:change="putFileName">
                         <span class="file-cta">
                             <span class="file-icon">

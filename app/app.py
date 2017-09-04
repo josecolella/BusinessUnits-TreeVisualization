@@ -25,10 +25,13 @@ from flask import (Flask, jsonify, render_template, url_for, flash,
                    request, make_response, redirect)
 from flask_uploads import (UploadSet, configure_uploads, UploadNotAllowed)
 from flask_caching import Cache
+from flask_wtf.csrf import CSRFProtect
 import uuid
 import ujson
-import cyamlTree
-
+try:
+    import cyamlTree
+except ModuleNotFoundError:
+    import app.cyamlTree as cyamlTree
 
 application = Flask(__name__)
 application.secret_key = "{host_info}-{random_str}".format(
@@ -38,14 +41,14 @@ application.secret_key = "{host_info}-{random_str}".format(
 application.config["UPLOADED_FILES_DEST"] = "/tmp/business_units"
 application.config["DOWNLOADED_FILES_DEST"] = "/tmp/"
 cache = Cache(application, config={"CACHE_TYPE": "redis"})
-
+csrf = CSRFProtect(application)
 
 uploaded_files = UploadSet(name="files", extensions=("yml", ""))
 configure_uploads(application, (uploaded_files,))
 
 
 @application.route("/", methods=["GET"])
-@cache.cached(timeout=60)
+#@cache.cached(timeout=60)
 def index():
     return render_template("index.html")
 
