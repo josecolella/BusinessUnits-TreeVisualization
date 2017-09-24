@@ -47,36 +47,33 @@ uploaded_files = UploadSet(name="files", extensions=("yml", ""))
 configure_uploads(application, (uploaded_files,))
 
 
-@application.route("/", methods=["GET"])
-#@cache.cached(timeout=60)
+@application.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
-
-
-@application.route("/upload", methods=["POST"])
-def upload():
     response = None
-    is_file_in_request = "file" in request.files
-    is_file_empty = request.files.get("file").filename == ""
+    is_request_get = request.method == "GET"
     is_request_post = request.method == "POST"
-    if is_request_post and is_file_in_request and not is_file_empty:
-        try:
-            filename = uploaded_files.save(request.files.get("file"))
-            yaml_dict = cyamlTree.businessunits_to_dict(
-                uploaded_files.path(filename))
-            output = cyamlTree.dict_to_d3tree(yaml_dict)
-            response = render_template(
-                "upload.html", tree=ujson.dumps(output))
-        except UploadNotAllowed:
-            message = ujson.dumps({
-                "status": "Error: Upload Not Allowed",
-                "description": "Only .yml files can be uploaded"
-            })
-            response = make_response(message, 400)
-    elif is_file_empty:
-        flash("Error: No file was uploaded")
-        response = redirect(url_for('index'))
-
+    if is_request_get:
+        response = render_template("index.html")
+    elif is_request_post:
+        is_file_in_request = "file" in request.files
+        is_file_empty = request.files.get("file").filename == ""
+        if is_file_in_request and not is_file_empty:
+            try:
+                filename = uploaded_files.save(request.files.get("file"))
+                yaml_dict = cyamlTree.businessunits_to_dict(
+                    uploaded_files.path(filename))
+                output = cyamlTree.dict_to_d3tree(yaml_dict)
+                response = render_template(
+                    "upload.html", tree=ujson.dumps(output))
+            except UploadNotAllowed:
+                message = ujson.dumps({
+                    "status": "Error: Upload Not Allowed",
+                    "description": "Only .yml files can be uploaded"
+                })
+                response = make_response(message, 400)
+        elif is_file_empty:
+            flash("Error: No file was uploaded")
+            response = redirect(url_for('index'))
     return response
 
 
